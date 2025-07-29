@@ -9,10 +9,14 @@ urlpatterns = [
     # Домашняя страница
     path('', views.index, name='index'),
     # Страница со списком всех тем.
-    path('topics/1', views.topics, name='topics'),
+    path('topics/', views.topics, name='topics'),
     # Страница с подробной информацией по отдельной теме
-    path('topics/1 <int:topic_id>/', views.topic, name='topic'),
+    path('topics/<int:topic_id>/', views.topic, name='topic'),
     # Страница для добавления новой темы
     path('new_topic/', views.new_topic, name='new_topic'),
+
+    path('new_entry/', views.new_entry, name='new_entry'),
+
+    path('topics/<int:topic_id>/new_entry/', views.new_entry, name='new_entry')
 
 ]
