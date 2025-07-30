@@ -9,6 +9,7 @@ services:
     plan: free
     buildCommand: "./build.sh"
     startCommand: "gunicorn learning_log.wsgi:application"
+
     envVars:
       - key: DATABASE_URL
         fromDatabase:
