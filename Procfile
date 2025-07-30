@@ -1,1 +1,1 @@
-web: gunicorn Django_project.wsgi:application
+web: gunicorn learning_log.wsgi:application
