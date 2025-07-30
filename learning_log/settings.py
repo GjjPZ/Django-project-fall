@@ -9,38 +9,19 @@ https://docs.djangoproject.com/en/2.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
-
 import os
 import dj_database_url
+from pathlib import Path
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = Path(__file__).resolve().parent.parent
 
+SECRET_KEY = os.getenv('SECRET_KEY', 'your-default-secret-key')
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',')
 
-SECRET_KEY = os.environ.get("SECRET_KEY", "default-secret-key")
-DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
-
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
-if os.environ.get('RENDER_EXTERNAL_HOSTNAME'):
-    ALLOWED_HOSTS.append(os.environ['RENDER_EXTERNAL_HOSTNAME'])
-    DEBUG = False
-
-    DATABASES = {
-        'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
-    }
-    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-else:
-    # локальная sqlite по умолчанию
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        }
-    }
+DATABASES = {
+    'default': dj_database_url.config(default=f"sqlite:///{BASE_DIR}/db.sqlite3")}
 
 
 
@@ -58,7 +39,7 @@ INSTALLED_APPS = ['learning_logs', 'users',
     'django.contrib.staticfiles',
 ]
 
-MIDDLEWARE = [
+MIDDLEWARE = ['whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -136,7 +117,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
+
+# Компрессия и кеширование
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 # Мои настройки.
